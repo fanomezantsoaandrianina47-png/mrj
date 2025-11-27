@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  photo     String?
+  nom       String
+  email     String   @unique
+  mdp       String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ecolages  Ecolage[]
+  choixs    Choix[]
+  messagesSent     Message[] @relation("MessagesEnvoyes")
+  messagesReceived Message[] @relation("MessagesReçus")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Categorie {
+  id        Int      @id @default(autoincrement())
+  categorie String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  cours     Cours[]
+}
+
+model Cours {
+  id          Int       @id @default(autoincrement())
+  titre       String
+  video       String
+  description String
+  id_categorie Int
+  categorie   Categorie @relation(fields: [id_categorie], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  choixs      Choix[]
+}
+
+model Ecolage {
+  id        Int      @id @default(autoincrement())
+  id_user   Int
+  user      User     @relation(fields: [id_user], references: [id])
+  mois      Int
+  annee     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Choix {
+  id        Int      @id @default(autoincrement())
+  id_user   Int
+  user      User     @relation(fields: [id_user], references: [id])
+  id_cours  Int
+  cours     Cours    @relation(fields: [id_cours], references: [id])
+  statut    Statut   @default(EN_COURS)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Statut {
+  EN_COURS
+  FINI
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  senderId  Int
+  sender    User     @relation("MessagesEnvoyes", fields: [senderId], references: [id])
+  receiverId Int
+  receiver  User     @relation("MessagesReçus", fields: [receiverId], references: [id])
+  content   String
+  createdAt DateTime @default(now())
+} 

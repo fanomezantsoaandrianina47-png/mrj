@@ -1,0 +1,28 @@
+<div class="container">
+    <div class="d-flex justify-content-end">
+        <a href="/admin/addCourses" class="btn btn-primary"><span class="bi bi-plus"></span> Ajouter</a>
+    </div>
+    <% if(courses.length>0){ %>
+        <% courses.forEach(c=>{ %>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <video src="./uploads/videos/<%c.video%>" controls></video>
+                        <div class="card-body">
+                            <div class="card-title"><b><%=c.titre%></b></div>
+                            <div class="card-content">
+                                <small><%=c.categorie.categorie%></small>
+                                <small>Envoi N° <%=c.id%></small>
+                                <p><%=c.description%></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    <%}else{%>
+        <div class="d-flex justify-content-center align-items-center">
+            <div class="alert alert-info">Pas de cours</div>
+        </div>
+    <%}%>
+</div>
